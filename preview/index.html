@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, height=device-height,user-scalable=no, initial-scale=1.0" />
+        <title>
+            <%title%>
+        </title>
+        <style>
+            @font-face {
+                font-family: "iconfont";
+                src: url('res/iconfont.ttf');
+            }
+
+            .iconfont {
+                font-family: "iconfont" !important;
+                font-size: 16px;
+                font-style: normal;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .icon-device:before {
+                content: "\e600";
+            }
+
+            .icon-zoom:before {
+                content: "\e675";
+            }
+
+            .icon-loading:before {
+                content: "\e644";
+            }
+
+            .icon-reload:before {
+                content: "\e61f";
+            }
+        </style>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            .app {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #d0d0d0;
+                overflow: hidden;
+            }
+
+            .screen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                background-color: white;
+                box-shadow: 1px 1px 3px 0px #444444;
+                transform-origin: 0 0;
+            }
+
+            .btn {
+                text-align: center;
+                appearance: none;
+                cursor: pointer;
+            }
+
+            .btn:visited {
+                color: #666;
+            }
+
+            .btn:hover,
+            .btn:focus,
+            .btn.active {
+                background-color: #f6f6f6;
+                text-decoration: none;
+                outline: none;
+            }
+
+            .btn:active {
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+                text-decoration: none;
+                background-color: #eeeeee;
+                border-color: #cfcfcf;
+                color: #d4d4d4;
+                -webkit-transition-duration: 0s;
+                transition-duration: 0s;
+                -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            }
+
+            .tools {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                background-color: #f0f0f0;
+                color: #617d8a;
+                border: 1px solid #000000;
+                z-index: 1;
+            }
+
+            .tools>.btn {
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 20px;
+            }
+
+            .device-ui {
+                position: absolute;
+                right: 55px;
+                top: 0;
+                border: 1px solid rgba(97, 125, 138, 0.2);
+            }
+
+            .device-li {
+                width: 130px;
+                padding: 5px 15px;
+                text-align: left;
+                background-color: #f0f0f0;
+            }
+
+            .device-li:not(:last-child) {
+                border-bottom: 1px solid rgba(97, 125, 138, 0.2);
+            }
+
+            .device-li>.title {
+                line-height: 24px;
+                font-size: 18px;
+            }
+
+            .device-li>.resolution {
+                line-height: 20px;
+                font-size: 14px;
+            }
+
+            .log {
+                position: fixed;
+                z-index: 99;
+                left: 0;
+                bottom: 0;
+                color: white;
+                background-color: black;
+                width: 100%;
+                display: none;
+            }
+
+            .log::before {
+                content: '**log** : '
+            }
+
+            .loading {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 999;
+                background-color: rgba(0, 0, 0, 0.2);
+            }
+
+            .loading>.iconfont {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 80px;
+                animation: rotate 2s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="app" id="app">
+            <div id="log" class="log"></div>
+            <iframe @load="hideLoading" class="screen" :width="active.width" :height="active.height" :src="src" :style="`width:${active.width}px;height:${active.height}px;transform: scale(${scale});`"
+                frameborder="0"></iframe>
+            <div class="tools">
+                <div @click="tiggerDevices" class="btn iconfont icon-device"></div>
+                <div @click="tiggerScale" class="btn iconfont icon-zoom"></div>
+                <div @click="reload" class="btn iconfont icon-reload"></div>
+                <div v-show="devicesShow" class="device-ui">
+                    <div @click="changeDevice(item)" v-for="item in devices" :class="{active:item===active}" class="btn device-li">
+                        <div class="title" v-text="item.title"></div>
+                        <div class="resolution" v-text="`${item.width} * ${item.height}`"></div>
+                    </div>
+                </div>
+                <div @click="" v-show="scaleShow" class="device-ui">
+                    <div @click="changeScale(item)" v-for="item in scales" :class="{active:item.val===scale}" class="btn device-li">
+                        <div class="title" v-text="item.title"></div>
+                    </div>
+                </div>
+            </div>
+            <div v-show="loading" class="loading">
+                <div class="iconfont icon-loading"></div>
+            </div>
+        </div>
+        <script src="res/vue.min.js"></script>
+        <script>
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    src_: '<%src%>',
+                    src: '',
+                    devices: [
+                        {
+                            title: 'iPhone 5',
+                            width: '320',
+                            height: '568',
+                        },
+                        {
+                            title: 'Nexus 5X',
+                            width: '412',
+                            height: '732',
+                        },
+                    ],
+                    active: {},
+                    devicesShow: false,
+                    scale: 1,
+                    scaleShow: false,
+                    loading: true,
+                    scales: [
+                        {
+                            title: '100%',
+                            val: '1'
+                        },
+                        {
+                            title: '75%',
+                            val: '0.75'
+                        },
+                        {
+                            title: '50%',
+                            val: '0.5'
+                        },
+                        {
+                            title: '30%',
+                            val: '0.3'
+                        },
+                    ]
+                },
+                methods: {
+                    init() {
+                        if(this.src_ === '<%src%>') {
+                            this.src_ = 'http://www.uileader.com';
+                        }
+                        this.src = this.src_;
+                        this.active = this.devices[0];
+                        this.scale = this.scales[0].val;
+                    },
+                    tiggerDevices() {
+                        this.scaleShow = false;
+                        this.devicesShow = this.devicesShow ? false : true;
+                    },
+                    changeScale(item) {
+                        this.scale = item.val;
+                        this.scaleShow = false;
+                    },
+                    tiggerScale() {
+                        this.devicesShow = false;
+                        this.scaleShow = this.scaleShow ? false : true;
+                    },
+                    changeDevice(item) {
+                        var willReload = this.active !== item;
+                        this.active = item;
+                        this.devicesShow = false;
+                        if(willReload) {
+                            this.$nextTick(this.reload);
+                        }
+                    },
+                    reload() {
+                        this.scaleShow = false;
+                        this.devicesShow = false;
+                        this.src = '';
+                        this.$nextTick(() => {
+                            this.src = this.src_;
+                        })
+                    },
+                    hideLoading() {
+                        console.timeEnd('loading')
+                        this.loading = false;
+                    }
+                },
+                mounted() {
+                    this.init();
+                },
+                watch: {
+                    src() {
+                        console.time('loading')
+                        loading = true;
+                    }
+                }
+            });
+        </script>
+    </body>
+
+</html>

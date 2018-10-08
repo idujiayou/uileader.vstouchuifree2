@@ -1,0 +1,12 @@
+{
+    "configuration.title": "TouchUI 配置",
+    "touchui.enable.description": "识别为TouchUI工程（工程标识，请勿全局设置为true）",
+    "touchui.deving.description": "开发服务进行中（开发状态标识，请勿手动修改）",
+    "touchui.init": "TouchUI 识别为TouchUI工程",
+    "touchui.createDemo": "TouchUI 创建基础工程",
+    "touchui.createPage": "TouchUI 新建页面",
+    "touchui.runBrowser": "TouchUI 编译并启动开发服务",
+    "touchui.stopService": "TouchUI 停止开发服务",
+    "touchui.runVscode": "TouchUI 在vscode预览",
+    "touchui.exportWeb": "TouchUI 编译并导出web工程"
+}

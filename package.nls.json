@@ -1,0 +1,12 @@
+{
+    "configuration.title": "TouchUI Configuration",
+    "touchui.enable.description": "Identified as TouchUI project (project ID, do not globally set to true)",
+    "touchui.deving.description": "Development service in progress (development status identification, do not manually modify)",
+    "touchui.init": "TouchUI Identifying as TouchUI project",
+    "touchui.createDemo": "TouchUI Create a basic project",
+    "touchui.createPage": "TouchUI Create a new page",
+    "touchui.runBrowser": "TouchUI Compile and start development services",
+    "touchui.stopService": "TouchUI Stop development services",
+    "touchui.runVscode": "TouchUI Preview in vscode",
+    "touchui.exportWeb": "TouchUI Compile and export the web project."
+}

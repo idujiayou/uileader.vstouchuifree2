@@ -1,0 +1,154 @@
+{
+	"name": "vstouchuifree",
+	"displayName": "TouchUI",
+	"description": "H5 Hybrid Development Tool",
+	"private": true,
+	"version": "1.4.12",
+	"publisher": "UILeader",
+	"engines": {
+		"vscode": "^1.22.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:touchui.init",
+		"onCommand:touchui.createDemo",
+		"onCommand:touchui.createPage",
+		"onCommand:touchui.runBrowser",
+		"onCommand:touchui.stopService",
+		"onCommand:touchui.runVscode",
+		"onCommand:touchui.exportWeb",
+		"workspaceContains:app.ui"
+	],
+	"main": "./out/extension",
+	"contributes": {
+		"configuration": {
+			"title": "%configuration.title%",
+			"properties": {
+				"touchui.enable": {
+					"type": "boolean",
+					"default": false,
+					"description": "%touchui.enable.description%"
+				},
+				"touchui.deving": {
+					"type": "boolean",
+					"default": false,
+					"description": "%touchui.deving.description%"
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "touchui.init",
+				"title": "%touchui.init%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.createDemo",
+				"title": "%touchui.createDemo%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.createPage",
+				"title": "%touchui.createPage%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.runBrowser",
+				"title": "%touchui.runBrowser%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.stopService",
+				"title": "%touchui.stopService%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.runVscode",
+				"title": "%touchui.runVscode%",
+				"category": "TouchUI"
+			},
+			{
+				"command": "touchui.exportWeb",
+				"title": "%touchui.exportWeb%",
+				"category": "TouchUI"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "touchui.init",
+					"group": "touchui@1",
+					"when": "!config.touchui.enable"
+				},
+				{
+					"command": "touchui.createDemo",
+					"group": "touchui@2"
+				},
+				{
+					"command": "touchui.createPage",
+					"group": "touchui@3",
+					"when": "config.touchui.enable"
+				},
+				{
+					"command": "touchui.runBrowser",
+					"group": "touchui@4",
+					"when": "config.touchui.enable&&!config.touchui.deving"
+				},
+				{
+					"command": "touchui.stopService",
+					"group": "touchui@5",
+					"when": "config.touchui.enable&&config.touchui.deving"
+				},
+				{
+					"command": "touchui.runVscode",
+					"group": "touchui@6",
+					"when": "config.touchui.enable&&false"
+				},
+				{
+					"command": "touchui.exportWeb",
+					"group": "touchui@10",
+					"when": "config.touchui.enable"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "tsc -p ./",
+		"compile": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"dev": "supervisor src/build/service.ts",
+		"build": "vsce package",
+		"clean-build": "rm -rf node_modules&&npm install --npm&&vsce package"
+	},
+	"devDependencies": {
+		"@types/archiver": "^2.1.0",
+		"@types/mime-types": "^2.1.0",
+		"@types/mocha": "^2.2.27",
+		"@types/node": "^6.0.40",
+		"@types/opn": "^5.1.0",
+		"mocha": "^4.0.1",
+		"supervisor": "^0.12.0",
+		"typescript": "^2.0.3",
+		"vscode": "^1.1.11"
+	},
+	"dependencies": {
+		"archiver": "^2.1.0",
+		"copy": "^0.3.1",
+		"opn": "^5.0.0",
+		"textfile": "^1.2.0",
+		"touchui-create": "^0.2.20",
+		"touchui-pack": "^1.9.27",
+		"vscode-i18n": "^0.2.0"
+	},
+	"__metadata": {
+		"id": "a4b4aa20-0b81-4aa8-8cb4-2c199d0ce670",
+		"publisherId": "f0080130-52a2-42c1-ba7c-7016b3494811",
+		"publisherDisplayName": "UILeader"
+	}
+}
